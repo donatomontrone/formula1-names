@@ -1,94 +1,142 @@
 body {
-  font-family: sans-serif;
-  text-align: center;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #1e1e1e, #2c3e50);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
-  position: relative;
+  text-align: center;
 }
 
 textarea {
   width: 300px;
   height: 100px;
-}
-
-input[type="range"] {
-  width: 200px;
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  resize: none;
+  margin-bottom: 10px;
 }
 
 button {
-  margin: 10px;
   padding: 10px 20px;
+  background: #e67e22;
+  color: white;
+  border: none;
+  border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+button:disabled,
+.disabled-btn {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 #track {
   position: relative;
-  width: 100%;
-  max-width: 900px;
-  margin: 40px auto;
-  border-top: 5px dashed #444;
-  border-bottom: 5px dashed #444;
-  padding: 30px 0;
-  min-height: 400px;
+  width: 90%;
+  max-width: 1000px;
+  height: 400px;
+  margin: 20px auto;
+  background: #444;
+  border: 5px solid #f1c40f;
+  border-radius: 15px;
   overflow: hidden;
-  background: linear-gradient(to right, #222 10%, #444 90%);
+}
+
+#finish-line {
+  position: absolute;
+  top: 0;
+  right: 80px;
+  height: 100%;
+  width: 28px; /* ancora più larga per effetto scacchi */
+  background:
+    linear-gradient(45deg, #fff 25%, #000 25%, #000 50%, #fff 50%, #fff 75%, #000 75%, #000 100%);
+  background-size: 16px 16px;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #fff;
 }
 
 .car {
-  position: absolute;
-  left: 0;
-  height: 40px;
-  width: 100px;
-  line-height: 40px;
-  color: #fff;
-  font-weight: bold;
-  border-radius: 20px;
-  text-align: center;
-  transition: left 0s;
-  z-index: 1;
-}
-
-.car::after {
-  content: '';
-  position: absolute;
-  left: -15px;
-  top: 15px;
-  width: 15px;
-  height: 10px;
-  background: rgba(255,255,255,0.4);
-  border-radius: 50%;
-  animation: smoke 0.3s ease-in-out infinite;
-}
-
-@keyframes smoke {
-  0% { opacity: 0.8; transform: scale(1); }
-  100% { opacity: 0; transform: scale(2); }
-}
-
-.track-line {
+  width: 50px;
+  height: auto;
   position: absolute;
   top: 0;
-  left: 85%;
-  width: 5px;
-  height: 100%;
-  background: white;
+  left: 0;
+  transition: left 0.02s linear;
+}
+
+.car img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transform: scaleX(-1); /* flip orizzontale */
 }
 
 #podium {
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-.gold { background: gold; }
-.silver { background: silver; }
-.bronze { background: #cd7f32; }
+#ranking div {
+  font-size: 20px;
+  margin: 5px 0;
+}
 
-@media (max-width: 600px) {
-  .car {
-    width: 80px;
-    font-size: 12px;
-  }
+.gold { color: gold; }
+.silver { color: silver; }
+.bronze { color: #cd7f32; }
+
+/* Griglia di partenza */
+.lane {
+  border-bottom: 1px dashed #fff3;
+  background: rgba(255,255,255,0.03);
+  height: 40px;
+}
+
+/* Popup podio */
+#podium-popup {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+#podium-popup-content {
+  background: #222;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 30px #000;
+  color: white;
+  min-width: 300px;
+}
+#podium-popup .gold { color: gold; }
+#podium-popup .silver { color: silver; }
+#podium-popup .bronze { color: #cd7f32; }
+
+#history {
+  margin-top: 40px;
+  background: #222;
+  padding: 20px 30px;
+  border-radius: 15px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+#history-list div {
+  margin-bottom: 10px;
+  font-size: 16px;
+  text-align: left;
 }
