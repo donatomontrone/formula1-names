@@ -2,32 +2,38 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Gara Automobilistica Realistica</title>
+  <title>🏎️ Race Names</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🏁 Gara Automobilistica Realistica 🏁</h1>
+  <h1>🏁 Race Names</h1>
 
   <textarea id="nameInput" placeholder="Inserisci un nome per riga"></textarea><br>
-  <label for="speedRange">Durata gara: <span id="durationLabel">5</span>s</label><br>
-  <input type="range" id="speedRange" min="3" max="15" value="5"><br>
-  <button onclick="startRace()">Via!</button>
+  <button onclick="startRace()">Inizia!</button>
 
-  <div id="track"></div>
+  <div id="track">
+    <div id="finish-line"></div>
+  </div>
 
   <div id="podium" class="hidden">
     <h2>🏆 Classifica Finale 🏆</h2>
-    <ol id="ranking"></ol>
-    <h3>📜 Cronologia gare</h3>
-    <ul id="history"></ul>
+    <div id="ranking"></div>
     <button onclick="location.reload()">Nuova Gara</button>
   </div>
 
-  <!-- Suoni -->
-  <audio id="startSound" src="start.mp3" preload="auto"></audio>
-  <audio id="accelSound" src="accel.mp3" preload="auto"></audio>
-  <audio id="passSound" src="pass.mp3" preload="auto"></audio>
-  <audio id="winSound" src="win.mp3" preload="auto"></audio>
+  <!-- Popup podio -->
+  <div id="podium-popup" class="hidden">
+    <div id="podium-popup-content">
+      <h2>🏆 Podio 🏆</h2>
+      <div id="popup-ranking"></div>
+      <button onclick="closePodiumPopup()">Chiudi</button>
+    </div>
+  </div>
+
+  <div id="history">
+    <h2>Cronologia Gare</h2>
+    <div id="history-list"></div>
+  </div>
 
   <script src="script.js"></script>
 </body>
