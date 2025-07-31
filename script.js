@@ -44,19 +44,68 @@ function showStartingGrid(names) {
 
     const carDiv = document.createElement("div");
     carDiv.className = "car";
-    carDiv.style.position = "relative";
-    carDiv.style.left = "0px";
-    carDiv.style.top = "0px";
-    carDiv.style.zIndex = "2";
-    carDiv.style.width = "50px"; // auto più piccola
 
-    const img = document.createElement("img");
-    img.src = carImages[i % carImages.length];
-    img.alt = "Auto";
-    img.style.width = "100%";
-    img.style.height = "auto";
+    // Corpo centrale
+    const body = document.createElement("div");
+    body.className = "car-body";
 
-    carDiv.appendChild(img);
+    // Tetto
+    const roof = document.createElement("div");
+    roof.className = "car-roof";
+
+    // Finestrino
+    const windowDiv = document.createElement("div");
+    windowDiv.className = "car-window";
+
+    // Cofano
+    const hood = document.createElement("div");
+    hood.className = "car-hood";
+
+    // Bagagliaio
+    const trunk = document.createElement("div");
+    trunk.className = "car-trunk";
+
+    // Paraurti anteriore
+    const bumperFront = document.createElement("div");
+    bumperFront.className = "car-bumper-front";
+
+    // Paraurti posteriore
+    const bumperRear = document.createElement("div");
+    bumperRear.className = "car-bumper-rear";
+
+    // Faro anteriore
+    const headlight = document.createElement("div");
+    headlight.className = "car-headlight";
+
+    // Faro posteriore
+    const taillight = document.createElement("div");
+    taillight.className = "car-taillight";
+
+    // Ruote
+    const wheelFront = document.createElement("div");
+    wheelFront.className = "car-wheel front";
+    const wheelRear = document.createElement("div");
+    wheelRear.className = "car-wheel rear";
+
+    // Fumi di scarico
+    const exhaust = document.createElement("div");
+    exhaust.className = "car-exhaust";
+    const smoke = document.createElement("span");
+    exhaust.appendChild(smoke);
+    carDiv.appendChild(exhaust);
+
+    // Assembla auto
+    carDiv.appendChild(body);
+    carDiv.appendChild(roof);
+    carDiv.appendChild(windowDiv);
+    carDiv.appendChild(hood);
+    carDiv.appendChild(trunk);
+    carDiv.appendChild(bumperFront);
+    carDiv.appendChild(bumperRear);
+    carDiv.appendChild(headlight);
+    carDiv.appendChild(taillight);
+    carDiv.appendChild(wheelFront);
+    carDiv.appendChild(wheelRear);
 
     const nameDiv = document.createElement("div");
     nameDiv.textContent = name;
@@ -69,6 +118,23 @@ function showStartingGrid(names) {
     lane.appendChild(carDiv);
     lane.appendChild(nameDiv);
     track.appendChild(lane);
+
+    const colors = [
+      "#e74c3c", // rosso
+      "#27ae60", // verde
+      "#f1c40f", // giallo
+      "#2980b9", // blu
+      "#8e44ad", // viola
+      "#e67e22", // arancione
+      "#16a085", // verde acqua
+      "#d35400", // arancio scuro
+      "#34495e", // blu scuro
+      "#ff6f91"  // rosa
+    ];
+
+    // Dopo aver creato body e roof:
+    body.style.background = `linear-gradient(90deg, ${colors[i % colors.length]} 60%, #222 100%)`;
+    roof.style.background = colors[i % colors.length];
   });
 }
 
@@ -93,44 +159,82 @@ function startRace() {
 }
 
 function runRace(names) {
-  // NON cancellare la griglia, ma solo le auto
   const track = document.getElementById("track");
-  // Prendi tutte le lane già create
   const lanes = Array.from(track.getElementsByClassName("lane"));
   const cars = [];
   const trackWidth = track.clientWidth;
-  const finishX = trackWidth - 90; // auto più piccola, linea più vicina
+  const finishX = trackWidth - 90;
   let finishCount = 0;
 
   names.forEach((name, i) => {
-    // Trova la carDiv dentro la lane
     const lane = lanes[i];
     const carDiv = lane.querySelector(".car");
     carDiv.style.left = "0px";
-    cars.push({ name, el: carDiv, x: 0, finished: false, finishOrder: null });
+    carDiv.classList.add("running");
+    cars.push({
+      name,
+      el: carDiv,
+      lane,
+      x: 0,           // posizione reale
+      displayX: 0,    // posizione visuale (per interpolazione)
+      finished: false,
+      finishOrder: null,
+      baseSpeed: 1.2 + Math.random() * 2.2,
+      bonus: 0
+    });
   });
 
-  const interval = setInterval(() => {
+  function animate() {
     let allFinished = true;
-    cars.forEach(car => {
+
+    // Ordina per posizione reale per i sorpassi visivi
+    cars.sort((a, b) => b.x - a.x);
+
+    cars.forEach((car, idx) => {
       if (!car.finished) {
-        const advance = Math.random() * 2 + 1; // più fluido e lento
-        car.x += advance;
+        // Penalità ridotta per chi è avanti
+        const positionPenalty = idx * 0.08;
+        // Turbo più frequente e più forte
+        if (Math.random() < 0.13) {
+          car.bonus = 4 + Math.random() * 3;
+        }
+        // Avanzamento piccolo ma frequente
+        const advance = car.baseSpeed + Math.random() * 1.2 + car.bonus - positionPenalty;
+        car.x += Math.max(advance, 0.5);
+        car.bonus = 0;
+
         if (car.x >= finishX) {
           car.x = finishX;
           car.finished = true;
           car.finishOrder = ++finishCount;
+          car.el.classList.remove("running");
         } else {
           allFinished = false;
         }
-        car.el.style.left = car.x + "px";
       }
+
+      // Interpolazione per movimento fluido
+      car.displayX += (car.x - car.displayX) * 0.35;
+      car.el.style.left = car.displayX + "px";
     });
-    if (allFinished) {
-      clearInterval(interval);
+
+    // Riordina le lane nel DOM per mostrare i sorpassi visivamente
+    cars.forEach(car => {
+      track.appendChild(car.lane);
+    });
+
+    if (!allFinished) {
+      requestAnimationFrame(animate);
+    } else {
+      // Assicura che tutte le auto arrivino esattamente al traguardo
+      cars.forEach(car => {
+        car.el.style.left = finishX + "px";
+      });
       endRace(cars);
     }
-  }, 20); // intervallo più breve per maggiore fluidità
+  }
+
+  requestAnimationFrame(animate);
 }
 
 // Alla fine della gara riabilita tutto

@@ -64,20 +64,185 @@ button:disabled,
   border-right: 2px solid #fff;
 }
 
+/* Auto realistica vista laterale */
 .car {
-  width: 50px;
-  height: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transition: left 0.02s linear;
+  position: relative;
+  width: 70px;
+  height: 30px;
+  margin-top: 2px;   /* meno spazio sopra */
+  margin-bottom: 2px;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  top: -4px;         /* ALZA l'auto rispetto alla corsia */
 }
 
-.car img {
-  width: 100%;
-  height: auto;
+.car-body {
+  position: absolute;
+  left: 8px;
+  top: 13px;
+  width: 54px;
+  height: 12px;
+  background: linear-gradient(90deg, #2980b9 60%, #222 100%);
+  border-radius: 8px 14px 10px 8px / 8px 10px 8px 8px;
+  box-shadow: 0 2px 6px #0008;
+  z-index: 2;
+  border: none;
+}
+
+.car-roof {
+  position: absolute;
+  left: 20px;
+  top: 4px;
+  width: 24px;
+  height: 10px;
+  background: #2980b9;
+  border-radius: 8px 10px 10px 8px / 8px 8px 8px 8px;
+  z-index: 3;
+  border: none;
+}
+
+.car-window {
+  position: absolute;
+  left: 26px;
+  top: 6px;
+  width: 14px;
+  height: 7px;
+  background: #b3e5fc;
+  border-radius: 3px 6px 6px 3px / 4px 6px 6px 4px;
+  z-index: 4;
+  opacity: 0.85;
+  border: none;
+}
+
+.car-hood {
+  position: absolute;
+  left: 8px;
+  top: 15px;
+  width: 12px;
+  height: 8px;
+  background: #2980b9;
+  border-radius: 6px 8px 6px 6px / 6px 8px 6px 6px;
+  z-index: 2;
+  border: none;
+}
+
+.car-trunk {
+  position: absolute;
+  left: 54px;
+  top: 17px;
+  width: 8px;
+  height: 8px;
+  background: #2980b9;
+  border-radius: 6px 8px 8px 6px / 8px 8px 8px 8px;
+  z-index: 2;
+  border: none;
+}
+
+.car-bumper-front {
+  position: absolute;
+  left: 2px;
+  top: 18px;
+  width: 6px;
+  height: 6px;
+  background: #888;
+  border-radius: 3px 5px 5px 3px / 3px 5px 5px 3px;
+  z-index: 1;
+  border: none;
+}
+
+.car-bumper-rear {
+  position: absolute;
+  left: 62px;
+  top: 20px;
+  width: 6px;
+  height: 6px;
+  background: #888;
+  border-radius: 5px 3px 3px 5px / 5px 3px 3px 5px;
+  z-index: 1;
+  border: none;
+}
+
+.car-headlight {
+  position: absolute;
+  left: 0px;
+  top: 16px;
+  width: 3px;
+  height: 5px;
+  background: #ffe066;
+  border-radius: 2px 3px 3px 2px / 2px 3px 3px 2px;
+  z-index: 5;
+}
+
+.car-taillight {
+  position: absolute;
+  left: 66px;
+  top: 18px;
+  width: 3px;
+  height: 5px;
+  background: #ff5252;
+  border-radius: 3px 2px 2px 3px / 3px 2px 2px 3px;
+  z-index: 5;
+}
+
+/* Ruote */
+.car-wheel {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #222;
+  border-radius: 50%;
+  border: 2px solid #888;
+  z-index: 10;
+  bottom: 0px;      /* era -4px, ora 0px per avvicinare la ruota al bordo basso */
+  box-shadow: 0 2px 4px #0006;
+}
+.car-wheel.front {
+  left: 10px;
+}
+.car-wheel.rear {
+  left: 46px;
+}
+
+/* Animazione ruote */
+.car.running .car-wheel {
+  animation: wheel-spin 0.25s linear infinite;
+}
+@keyframes wheel-spin {
+  100% { transform: rotate(360deg);}
+}
+
+/* Fumo di scarico */
+.car.running .car-exhaust {
   display: block;
-  transform: scaleX(-1); /* flip orizzontale */
+  animation: exhaust-smoke 0.7s linear infinite;
+}
+.car-exhaust {
+  display: none;
+  position: absolute;
+  left: 0px;
+  top: 22px;
+  width: 10px;
+  height: 10px;
+  z-index: 0;
+  pointer-events: none;
+}
+.car-exhaust span {
+  display: block;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, #bbb 60%, transparent 100%);
+  opacity: 0.7;
+  border-radius: 50%;
+  animation: exhaust-puff 0.7s linear infinite;
+}
+@keyframes exhaust-smoke {
+  0% { opacity: 0.7; transform: scale(1) translateY(0);}
+  100% { opacity: 0; transform: scale(1.8) translateY(-10px);}
+}
+@keyframes exhaust-puff {
+  0% { opacity: 0.7; transform: scale(1);}
+  100% { opacity: 0; transform: scale(1.8);}
 }
 
 #podium {
@@ -107,24 +272,28 @@ button:disabled,
 /* Popup podio */
 #podium-popup {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0; left: 0; width: 100vw; height: 100vh;
   background: rgba(0,0,0,0.7);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
 }
 #podium-popup-content {
-  background: #222;
-  padding: 30px 40px;
-  border-radius: 20px;
-  box-shadow: 0 0 30px #000;
-  color: white;
-  min-width: 300px;
+  background: #fff;
+  color: #222;
+  border-radius: 16px;
+  padding: 32px 24px;
+  min-width: 220px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px #0008;
+  font-size: 1.2rem;
+  text-align: center;
+  opacity: 1;
 }
-#podium-popup .gold { color: gold; }
-#podium-popup .silver { color: silver; }
-#podium-popup .bronze { color: #cd7f32; }
+#podium-popup .gold { color: #e6b800; font-weight: bold; }
+#podium-popup .silver { color: #aaa; }
+#podium-popup .bronze { color: #b87333; }
 
 #history {
   margin-top: 40px;
